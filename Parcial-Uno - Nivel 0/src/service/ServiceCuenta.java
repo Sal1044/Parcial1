@@ -31,17 +31,15 @@ public class ServiceCuenta implements IServiceCuenta {
         cuentas.add(new Corriente("770098765408", 1016789012, 9_050_000.00, 0.004));
     }
 
-    // Implementación de los métodos
-
     @Override
     public List<Cuenta> obtenerCuentas() {
-        return cuentas;
+        return new ArrayList<>(cuentas);
     }
 
     @Override
     public Cuenta obtenernumeroCuenta(String numeroCuenta) {
         for (Cuenta cuenta : cuentas) {
-            if (cuenta.getNumeroCuenta().equalsIgnoreCase(numeroCuenta)) {
+            if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
                 return cuenta;
             }
         }
@@ -50,27 +48,25 @@ public class ServiceCuenta implements IServiceCuenta {
 
     @Override
     public boolean crearCuenta(Cuenta cuenta) {
-        if (obtenernumeroCuenta(cuenta.getNumeroCuenta()) != null) {
+        if (cuenta == null || cuenta.getNumeroCuenta() == null
+                || cuenta.getNumeroCuenta().trim().isEmpty()
+                || obtenernumeroCuenta(cuenta.getNumeroCuenta()) != null) {
             return false;
         }
-        return cuentas.add(cuenta);
+        cuentas.add(cuenta);
+        return true;
     }
 
     @Override
     public boolean retirarDinero(String numeroCuenta, double retiro) {
         Cuenta cuenta = obtenernumeroCuenta(numeroCuenta);
-        if (cuenta == null) {
-            return false;
-        }
-        return cuenta.retirar(retiro);
+        return cuenta != null && cuenta.retirar(retiro);
     }
 
     @Override
     public boolean ingresarDinero(String numeroCuenta, double ingreso) {
         Cuenta cuenta = obtenernumeroCuenta(numeroCuenta);
-        if (cuenta == null) {
-            return false;
-        }
-        return cuenta.depositar(ingreso);
+        return cuenta != null && cuenta.depositar(ingreso);
     }
+
 }
